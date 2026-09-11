@@ -1,0 +1,62 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int LOG = 60;
+int n;
+struct Linear {
+    int n;
+    ll a[LOG + 5], tmp[LOG + 5];
+    bool flag;
+    inline void insert(ll x) {
+        for (ll i = LOG; ~i; i--) {
+            if (x & (1ll << i)) {
+                if (!a[i]) {
+                    a[i] = x;
+                    return;
+                }
+                x ^= a[i];
+            }
+        }
+        flag = 1;
+    }
+    inline bool check(ll x) {
+        for (ll i = LOG; ~i; i--) {
+            if (x & (1ll << i)) {
+                if (!a[i]) return false;
+                x ^= a[i];
+            }
+        }
+        return true;
+    }
+    inline ll qmax() {
+        ll res = 0;
+        for (ll i = LOG; ~i; i--) {
+            res = max(res, res ^ a[i]);
+        }
+        return res;
+    }
+    inline ll qmin() {
+        for (ll i = 0; i <= LOG; i++) {
+            if (a[i]) return a[i];
+        }
+    }
+    inline ll query(ll k) {
+        ll res = 0, cnt = 0;
+        k -= flag;
+        if (!k) return 0;
+        for (ll i = 0; i <= LOG; i++) {
+            for (ll j = i - 1; ~j; j--) {
+                if (a[i] & (1ll << j)) a[i] ^= a[j];
+            }
+            if (a[i]) tmp[cnt++] = a[i];
+        }
+        if (k >= (1ll << cnt)) return -1;
+        for (int i = 0; i < cnt; i++) {
+            if (k & (1ll << i)) res ^= tmp[i];
+        }
+        return res;
+    }
+};
+signed main() {
+    return 0;
+}
