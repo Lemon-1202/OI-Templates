@@ -1,32 +1,35 @@
 #include <bits/stdc++.h>
-#define int long long
+#define IOS ios::sync_with_stdio(false), cin.tie(0), cout.tie(0)
+#define fir first
+#define sec second
 using namespace std;
-inline int Manacher(string str) { // 求出最长 Border
-    int n = str.size();
-    vector <int> p(2 * n + 5);
-    vector <char> t(2 * n + 5);
-    int m = 0;
-    t[++m] = '$';
-    for (int i = 0; i < n; i++) t[++m] = str[i], t[++m] = '$';
-    int M = 0, R = 0;
-    for (int i = 1; i <= m; i++) {
-        if (i > R) p[i] = 1;
-        else p[i] = min(p[2 * M - i], R - i + 1);
-        while (i - p[i] >= 1 && i + p[i] <= m && t[i - p[i]] == t[i + p[i]]) p[i]++;
-        if (i + p[i] - 1 > R) M = i, R = i + p[i] - 1;
+
+namespace Mort1s {
+    const int N = 3e7 + 5;
+    int ans;
+    int p[N];
+    inline void Manacher(string t) {
+        int n = t.size();
+        string s = "^#";
+        for (char c : t) s.push_back(c), s.push_back('#');
+        s.push_back('@');
+        for (int i = 1, j = 0; i <= 2 * n + 1; i++) {
+            if (i <= j + p[j]) p[i] = min(p[2 * j - i], j + p[j] - i);
+            while (s[i + p[i] + 1] == s[i - p[i] - 1]) p[i]++;
+            if (i + p[i] > j + p[j]) j = i;
+            ans = max(ans, p[i]);
+        }
     }
-    return *max_element(p.begin(), p.end()) - 1;
-}
-string s;
-namespace Solution {
-    inline void Main() {
-        cin >> s;
-        cout << Manacher(s);
+    inline void solve() {
+        string s; cin >> s;
+        Manacher(s);
+        cout << ans;
     }
 }
 signed main() {
-    int T = 1;
-    // cin >> T;
-    while (T--) Solution::Main();
+    IOS;
+    int t = 1;
+    // cin >> t;
+    while (t--) Mort1s::solve();
     return 0;
 }
